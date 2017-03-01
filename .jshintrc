@@ -1,0 +1,19 @@
+{
+    "bitwise": true,
+    "browser": true,
+    "browserify": true,
+    "curly": true,
+    "devel": true,
+    "eqeqeq": false,
+    "esnext": false,
+    "latedef": true,
+    "noarg": true,
+    "node": true,
+    "strict": true,
+    "undef": true,
+    "unused": true,
+    "laxcomma": true,
+    "globals": {
+        "angular": false
+    }
+}

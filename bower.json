@@ -1,0 +1,26 @@
+{
+  "name": "cjw-api-wrapper",
+  "version": "1.0.0",
+  "homepage": "sample/index.html",
+  "license": "MIT",
+  "authors": [
+    "Chris Weight <chris@chrisweight.com>"
+  ],
+  "description": "A simple, clean API wrapper for NG 1.x that offers a more consistent interface and better cache handling for complex GET requests",
+  "main": "src/cjw/api-wrapper.service.js",
+  "keywords": [
+    "api",
+    "module",
+    "angular"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}
