@@ -29,7 +29,7 @@ as client-side ones, so the wrapper does as much as it can to facilitate this wh
 ##### To get started:
 - Open your terminal and run `npm install`
 - When complete, run `npm start`
-- Once the test server is up and running, open your browser and point it to: _[http://localhost:3000]_
+- Once the test server is up and running, open your browser and point it to: _[http://localhost:3000](http://localhost:3000 "localhost")_
 - You should be presented with a cutting-edge (lolz) interface which gives you the opportunity to view and delete
 as many company employees as your inner-evil-CEO wishes. 
 
