@@ -1,18 +1,17 @@
 var
-    gulp = require('gulp'),
-    concat = require('gulp-concat'),
-    uglify = require('gulp-uglify'),
-    util = require('gulp-util'),
-    jshint = require('gulp-jshint'),
-    stylish = require('jshint-stylish'),
-    sourcemaps = require('gulp-sourcemaps'),
-    useref = require('gulp-useref')
+    gulp        = require('gulp'),
+    concat      = require('gulp-concat'),
+    uglify      = require('gulp-uglify'),
+    util        = require('gulp-util'),
+    jshint      = require('gulp-jshint'),
+    stylish     = require('jshint-stylish'),
+    sourcemaps  = require('gulp-sourcemaps'),
+    useref      = require('gulp-useref')
     ;
 
 var paths = {
     js: 'src/cjw.api-wrapper.service.js'
 };
-
 
 var onError = function (source, error) {
     new util
@@ -23,6 +22,9 @@ var onError = function (source, error) {
     this.emit('end');
 };
 
+
+// - Tasks
+//
 
 gulp.task('lint', function () {
     return gulp
@@ -45,6 +47,5 @@ gulp.task('js', ['lint'], function () {
         .pipe(gulp.dest('sample'))
         ;
 });
-
 
 gulp.task('default', ['js']);

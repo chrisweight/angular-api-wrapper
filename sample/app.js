@@ -4,11 +4,10 @@
      * Created by Chris.
      */
 
-
     'use strict';
 
 
-    // Grab the desired API URL from the HTML if available
+    // Grab the desired API URL from the HTML
     //
 
     var apiUrl = window.apiUrl;
@@ -24,14 +23,71 @@
 
         apiUrlProvider.setUrl(apiUrl);
 
-        // TODO: Re-factor this into 'home' directory so it's _actually_ modular!
         $stateProvider
+
             .state('home', {
                 url: '/',
                 templateUrl: 'home/home.html',
                 controller: 'HomeController',
-                controllerAs: 'vm'
-            });
+                controllerAs: 'vm',
+                resolve: {
+                    config: ['apiWrapper', function (apiWrapper) {
+                        return apiWrapper
+                            .get('config')
+                            .then(
+                                function (response) {
+                                    return response;
+                                },
+                                function (error) {
+                                    $log.error(error);
+                                    return {
+                                        title: 'Failed to get title from service',
+                                        strap: 'Failed to get strap from service'
+                                    }
+                                }
+                            );
+                    }],
+                    users: ['apiWrapper', function (apiWrapper) {
+                        return apiWrapper
+                            .get('users', null, null , true)
+                            .then(
+                                function (response) {
+                                    return response;
+                                },
+                                function (error) {
+                                    $log.error(error);
+                                    return [];
+                                }
+                            );
+                    }]
+                }
+            })
+
+            .state('edit', {
+                url: '/edit/:userId',
+                templateUrl: 'edit/edit.html',
+                controller: 'EditController',
+                controllerAs: 'vm',
+                resolve: {
+                    user: ['$stateParams', 'apiWrapper', function($stateParams, apiWrapper) {
+                        return apiWrapper
+                            .get('users', { id: $stateParams.userId }, null, true)
+                            .then(
+                                function (response) {
+                                    return response[0];
+                                },
+                                function (error) {
+                                    $log.error(error);
+                                    return {
+                                        firstName: 'Failed to fetch user from Database!'
+                                    };
+                                }
+                            );
+                    }]
+                }
+            })
+
+        ;
 
         $urlRouterProvider.otherwise("/");
     }

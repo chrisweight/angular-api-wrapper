@@ -1,11 +1,17 @@
 {
   "name": "cjw-api-wrapper",
   "version": "1.0.0",
-  "description": "A simple, clean API wrapper for NG 1.x that offers a more consistent interface and better cache handling for complex GET requests",
+  "description": "An API wrapper for NG 1.x that offers a simple, more consistent interface to a REST API,  better cache handling for complex GET requests, default setting of a Content-Transfer-Encoding header. Is configurable through it's Provider.",
   "repository": "https://github.com/chrisweight/angular-api-wrapper.git",
   "license": "MIT",
+  "scripts": {
+    "build": "gulp default",
+    "serve": "json-server ./api/generate.js --static ./sample",
+    "start": "npm run build && npm run serve"
+  },
   "devDependencies": {
     "bower": "^1.7.2",
+    "faker": "^4.1.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-copy": "^0.0.2",
@@ -19,6 +25,8 @@
     "gulp-useref": "^3.0.3",
     "gulp-util": "^3.0.7",
     "jshint": "^2.8.0",
-    "jshint-stylish": "^2.1.0"
+    "jshint-stylish": "^2.1.0",
+    "json-server": "^0.9.5",
+    "lodash": "^4.17.4"
   }
 }

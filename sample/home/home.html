@@ -1,4 +1,11 @@
 <div>
-    <h1 class="main-title" ng-bind="vm.title"></h1>
-    <h3 class="strap" ng-bind="vm.strap"></h3>
+    <h1 class="main-title">Company name: {{vm.title}}</h1>
+    <h3 class="strap">Motto: {{vm.strap}}</h3>
+    <hr>
+    <h4>Employees:</h4>
+    <ul>
+        <li ng-repeat="user in vm.users">
+            <a ui-sref="edit({userId: user.id})">{{user.firstName}} {{user.lastName}}</a>
+        </li>
+    </ul>
 </div>

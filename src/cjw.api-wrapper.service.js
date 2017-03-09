@@ -54,7 +54,6 @@
     function APIWrapperService($log, $http, $cacheFactory, $q, apiUrl) {
 
         // Faux enum
-        // TODO: Set proper enumerations (as far as is possible with JS)
         var _methods = {
             GET: 'GET',
             POST: 'POST',
@@ -73,11 +72,18 @@
                 deferred.reject("APIWrapperService.query() -> NO API Url Set!");
             }
 
-            if (headers === undefined) {
+            if (headers === undefined || headers === null) {
                 headers = {};
             }
 
             headers['Content-Transfer-Encoding'] = 'utf-8';
+
+            // NOTE: This is a hack: if we want to include a body with a DELETE request, we need
+            // to amend or add the Content-Type header to allow this (this will only work if the server allows this
+            // type of DELETE)
+            if (method === _methods.DELETE && !!params) {
+                headers['Content-Type'] = 'application/json;charset=utf-8';
+            }
 
             if (clearCache === true) {
                 var httpCache = $cacheFactory.get('$http'),
@@ -103,20 +109,22 @@
                 headers: headers
             };
 
-            switch (method) {
-                case _methods.GET:
-                    config.params = params;
-                    break;
-                default:
-                    config.data = params;
+            if (method == _methods.GET) {
+                config.params = params;
+            } else {
+                config.data = params;
             }
 
-            $http(config).then(function (response) {
-                return deferred.resolve(response.data);
-            }, function (error) {
-                $log.error('CJWAPIWrapperService.query() -> ', config, endpoint, 'clearCache:', clearCache, 'error:', error);
-                return deferred.reject(error);
-            });
+            $http(config)
+                .then(
+                    function (response) {
+                        return deferred.resolve(response.data);
+                    },
+                    function (error) {
+                        $log.error('CJWAPIWrapperService.query() -> ', config, endpoint, 'clearCache:', clearCache, 'error:', error);
+                        return deferred.reject(error);
+                    }
+                );
 
             return deferred.promise;
         }
