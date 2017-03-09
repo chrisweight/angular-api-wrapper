@@ -75,6 +75,27 @@
             return _formatted;
         }
 
+        function purge(method, endpoint, params) {
+            var httpCache = $cacheFactory.get('$http'),
+                getParams = '';
+
+            // NOTE: For GET requests, if we want to clear the cache, make sure we append any params here to
+            //       create the full GET Url path, otherwise we never
+            //       clear the cache properly
+            if (method === _methods.GET && !!params) {
+                getParams = '?';
+                for (var key in params) {
+                    getParams = getParams + key + '=' + params[key];
+                }
+            }
+
+            var _finalUrl = _url + endpoint + getParams;
+
+            $log.debug('purge() -> ' + _finalUrl);
+
+            httpCache.remove(_finalUrl);
+        }
+
         function query(method, endpoint, params, headers, clearCache) {
             $log.debug({
                 'method': method,
@@ -91,21 +112,7 @@
             }
 
             if (clearCache === true) {
-                var httpCache = $cacheFactory.get('$http'),
-                    getParams = '';
-
-                // NOTE: If we want to clear the cache, make sure we append any params here to make
-                //       sure we actually return the full GET Url path, otherwise we never
-                //       clear the cache properly in the instance that we have a GET Url to clear with
-                //       params attached.
-                if (method === _methods.GET && !!params) {
-                    getParams = '?';
-                    for (var key in params) {
-                        getParams = getParams + key + '=' + params[key];
-                    }
-                }
-
-                httpCache.remove(_url + endpoint + getParams);
+               purge(method, endpoint, params);
             }
 
             var config = {
