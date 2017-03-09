@@ -1,6 +1,6 @@
 # angular-api-wrapper
-A simple API wrapper service for NG 1.x, providing a more consistent interface and more 
-intelligent cache clearance for complex GET requests
+A simple API wrapper service for NG 1.x, providing a more consistent interface, 
+intelligent cache clearance for complex GET requests and other edge-case features.
 
 ##### Reasoning:
 Having developed _n^many_ Angular-based sites, services and components, 

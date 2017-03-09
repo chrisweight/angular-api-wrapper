@@ -65,7 +65,6 @@
         var service = {};
 
         function query(method, endpoint, params, headers, clearCache) {
-
             var deferred = $q.defer();
 
             if (_url === undefined || _url === null) {
@@ -76,6 +75,9 @@
                 headers = {};
             }
 
+            // Ensure we set utf-8 here to deal with extended ASCII characters in i18n scenarios,
+            // amongst other things. For most REST APIs, this is quite useful.
+            // NOTE: Consider allowing Base64 here too?
             headers['Content-Transfer-Encoding'] = 'utf-8';
 
             // NOTE: This is a hack: if we want to include a body with a DELETE request, we need
