@@ -55,14 +55,14 @@
 
         // Faux enum
         var _methods = {
-            GET:    'GET',
-            POST:   'POST',
+            GET: 'GET',
+            POST: 'POST',
             DELETE: 'DELETE',
-            PUT:    'PUT'
+            PUT: 'PUT'
         };
 
-        var _url        = apiUrl.url,
-             service    = {};
+        var _url = apiUrl.url,
+            service = {};
 
         function formatDefaultHeaders(headers) {
             var _formatted = headers || {};
@@ -77,17 +77,35 @@
 
         function query(method, endpoint, params, headers, clearCache) {
             $log.debug({
-                'method':       method,
-                'endpoint':     endpoint,
-                'params':       params,
-                'headers':      headers,
-                'clearCache':   clearCache
+                'method': method,
+                'endpoint': endpoint,
+                'params': params,
+                'headers': headers,
+                'clearCache': clearCache
             });
 
             var deferred = $q.defer();
 
             if (_url === undefined || _url === null) {
                 deferred.reject("APIWrapperService.query() -> NO API Url Set!");
+            }
+
+            if (clearCache === true) {
+                var httpCache = $cacheFactory.get('$http'),
+                    getParams = '';
+
+                // NOTE: If we want to clear the cache, make sure we append any params here to make
+                //       sure we actually return the full GET Url path, otherwise we never
+                //       clear the cache properly in the instance that we have a GET Url to clear with
+                //       params attached.
+                if (method === _methods.GET && !!params) {
+                    getParams = '?';
+                    for (var key in params) {
+                        getParams = getParams + key + '=' + params[key];
+                    }
+                }
+
+                httpCache.remove(_url + endpoint + getParams);
             }
 
             var config = {
@@ -121,19 +139,6 @@
         //
 
         service.get = function (endpoint, params, headers, clearCache) {
-            // NOTE: If we want to clear the cache, make sure we append any params here to make
-            //       sure we actually return the full GET Url path, otherwise we never
-            //       clear the cache properly in the instance that we have a GET Url to clear with
-            //       params attached.
-            if (clearCache === true && !!params) {
-                var httpCache = $cacheFactory.get('$http'),
-                    getParams = '?';
-                for (var key in params) {
-                    getParams = getParams + key + '=' + params[key];
-                }
-                httpCache.remove(_url + endpoint + getParams);
-            }
-
             return query(_methods.GET, endpoint, params, formatDefaultHeaders(headers), clearCache || false);
         };
 
