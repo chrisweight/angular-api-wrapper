@@ -122,7 +122,7 @@
 
         service.get = function (endpoint, params, headers, clearCache) {
             // NOTE: If we want to clear the cache, make sure we append any params here to make
-            //       sure we actually return the full GET Url path, otherwise we never actually
+            //       sure we actually return the full GET Url path, otherwise we never
             //       clear the cache properly in the instance that we have a GET Url to clear with
             //       params attached.
             if (clearCache === true && !!params) {
