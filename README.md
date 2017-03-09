@@ -9,7 +9,7 @@ with REST API's in most common scenarios...
  
 1. GET request cache clearance is a pain when complex querystrings are involved
 
-2. Say you want to append data to your request, if you GET you need to add _params_ but if you POST/PUT/DELETE 
+2. Say you want to append data to your request, if you GET you need to add _params_ but if you POST/PUT 
 you need to add _data_
 
 3. Content transfer encoding often needs to be set to UTF-8 for a variety of reasons, project-depending
