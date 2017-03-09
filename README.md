@@ -47,5 +47,5 @@ multiple APIs easily in a single NG app
 - Modularize the Sample app properly
 - Convert client-side sample and wrapper to ES6
 - Remove Gulp, move to Webpack build
-- Anotjher approach that I might use in future is to write in the default request amendment behaviours as 
+- Another approach that I might use in future is to write in the default request amendment behaviours as 
 interceptors for a more 'transparent' solution
