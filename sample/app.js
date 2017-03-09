@@ -49,7 +49,7 @@
                     }],
                     users: ['apiWrapper', function (apiWrapper) {
                         return apiWrapper
-                            .get('users', null, null , true)
+                            .get('users', null, null, true)
                             .then(
                                 function (response) {
                                     return response;

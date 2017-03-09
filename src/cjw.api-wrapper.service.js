@@ -55,53 +55,39 @@
 
         // Faux enum
         var _methods = {
-            GET: 'GET',
-            POST: 'POST',
+            GET:    'GET',
+            POST:   'POST',
             DELETE: 'DELETE',
-            PUT: 'PUT'
+            PUT:    'PUT'
         };
 
-        var _url = apiUrl.url;
-        var service = {};
+        var _url        = apiUrl.url,
+             service    = {};
 
-        function query(method, endpoint, params, headers, clearCache) {
-            var deferred = $q.defer();
-
-            if (_url === undefined || _url === null) {
-                deferred.reject("APIWrapperService.query() -> NO API Url Set!");
-            }
-
-            if (headers === undefined || headers === null) {
-                headers = {};
-            }
+        function formatDefaultHeaders(headers) {
+            var _formatted = headers || {};
 
             // Ensure we set utf-8 here to deal with extended ASCII characters in i18n scenarios,
             // amongst other things. For most REST APIs, this is quite useful.
             // NOTE: Consider allowing Base64 here too?
-            headers['Content-Transfer-Encoding'] = 'utf-8';
+            _formatted['Content-Transfer-Encoding'] = 'utf-8';
 
-            // NOTE: This is a hack: if we want to include a body with a DELETE request, we need
-            // to amend or add the Content-Type header to allow this (this will only work if the server allows this
-            // type of DELETE)
-            if (method === _methods.DELETE && !!params) {
-                headers['Content-Type'] = 'application/json;charset=utf-8';
-            }
+            return _formatted;
+        }
 
-            if (clearCache === true) {
-                var httpCache = $cacheFactory.get('$http'),
-                    getParams = '';
+        function query(method, endpoint, params, headers, clearCache) {
+            $log.debug({
+                'method':       method,
+                'endpoint':     endpoint,
+                'params':       params,
+                'headers':      headers,
+                'clearCache':   clearCache
+            });
 
-                if (method === _methods.GET && !!params) {
-                    // NOTE: Make sure we append any params here to make sure we actually return the
-                    //       full GET Url path, otherwise we never actually clear the cache properly in the instance
-                    //       that we have a GET Url to clear with params attached.
-                    getParams = '?';
-                    for (var key in params) {
-                        getParams = getParams + key + '=' + params[key];
-                    }
-                }
+            var deferred = $q.defer();
 
-                httpCache.remove(_url + endpoint + getParams);
+            if (_url === undefined || _url === null) {
+                deferred.reject("APIWrapperService.query() -> NO API Url Set!");
             }
 
             var config = {
@@ -135,19 +121,41 @@
         //
 
         service.get = function (endpoint, params, headers, clearCache) {
-            return query(_methods.GET, endpoint, params, headers, clearCache || false);
+            // NOTE: If we want to clear the cache, make sure we append any params here to make
+            //       sure we actually return the full GET Url path, otherwise we never actually
+            //       clear the cache properly in the instance that we have a GET Url to clear with
+            //       params attached.
+            if (clearCache === true && !!params) {
+                var httpCache = $cacheFactory.get('$http'),
+                    getParams = '?';
+                for (var key in params) {
+                    getParams = getParams + key + '=' + params[key];
+                }
+                httpCache.remove(_url + endpoint + getParams);
+            }
+
+            return query(_methods.GET, endpoint, params, formatDefaultHeaders(headers), clearCache || false);
         };
 
         service.post = function (endpoint, params, headers, clearCache) {
-            return query(_methods.POST, endpoint, params, headers, clearCache || false);
+            return query(_methods.POST, endpoint, params, formatDefaultHeaders(headers), clearCache || false);
         };
 
         service.delete = function (endpoint, params, headers, clearCache) {
-            return query(_methods.DELETE, endpoint, params, headers, clearCache || false);
+            var _headers = formatDefaultHeaders(headers);
+
+            // NOTE: This is a hack: if we want to include a request body with a DELETE request, we need
+            // to amend or add the Content-Type header to try and allow this (this will only work if the
+            // server allows this type of DELETE)
+            if (!!params) {
+                _headers['Content-Type'] = 'application/json;charset=utf-8';
+            }
+
+            return query(_methods.DELETE, endpoint, params, _headers, clearCache || false);
         };
 
         service.put = function (endpoint, params, headers, clearCache) {
-            return query(_methods.PUT, endpoint, params, headers, clearCache || false);
+            return query(_methods.PUT, endpoint, params, formatDefaultHeaders(headers), clearCache || false);
         };
 
         service.url = function () {
